@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2009-2010 WeigleWilczek and others.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Public License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<!--
+########################################################################################################################
+Game of Life
+########################################################################################################################
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+  ######################################################################################################################
+  Basics
+  ######################################################################################################################
+  -->
+
+  <groupId>com.weiglewilczek.gol</groupId>
+  <artifactId>gol</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <!--
+  ######################################################################################################################
+  More project information
+  ######################################################################################################################
+  -->
+
+  <name>Game of Life</name>
+  <description>Game of Life in Scala.</description>
+  <url>http://www.weiglewilczek.com/</url>
+  <inceptionYear>2010</inceptionYear>
+  <organization>
+    <name>WeigleWilczek</name>
+    <url>http://www.weiglewilczek.com/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Heiko Seeberger</name>
+      <organization>WeigleWilczek</organization>
+      <email>heiko.seeberger@googlemail.com</email>
+    </developer>
+  </developers>
+
+  <!--
+  ######################################################################################################################
+  Properties
+  ######################################################################################################################
+  -->
+
+  <properties>
+
+    <!-- Common plugin settings -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+
+    <!-- Specific project settings -->
+    <scala.version>2.8.0.Beta1</scala.version>
+    <scalatest.version>1.0.1-for-scala-2.8.0.Beta1-SNAPSHOT</scalatest.version>
+  </properties>
+
+  <!--
+  ######################################################################################################################
+  Dependencies
+  ######################################################################################################################
+  -->
+
+  <dependencies>
+
+    <!-- Compile -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+    </dependency>
+
+    <!-- Provided -->
+    <!-- Just for IntelliJ! Overwrite scope with test where neccessary! -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-compiler</artifactId>
+      <version>${scala.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest</artifactId>
+      <version>${scalatest.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.7</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+  ######################################################################################################################
+  Build
+  ######################################################################################################################
+  -->
+
+  <build>
+    <sourceDirectory>src/main/scala</sourceDirectory>
+    <testSourceDirectory>src/test/scala</testSourceDirectory>
+    <plugins>
+
+      <!-- Plugins distributed by Maven (alphabetically sorted) -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.4.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <includes>
+            <include>**/*Spec.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <!-- Plugins distributed by 3rd parties (alphabetically sorted) -->
+      <plugin>
+        <groupId>com.google.code.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <version>1.4.0</version>
+        <configuration>
+          <header>${basedir}/resources/header.txt</header>
+          <quiet>false</quiet>
+          <failIfMissing>true</failIfMissing>
+          <includes>
+            <include>src/main/scala/**</include>
+            <include>src/test/scala/**</include>
+          </includes>
+          <excludes>
+            <exclude>.git/**</exclude>
+            <exclude>**/.gitignore</exclude>
+            <exclude>**/*.css</exclude>
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.xhtml</exclude>
+            <exclude>**/*.xml</exclude>
+          </excludes>
+          <useDefaultExcludes>true</useDefaultExcludes>
+          <mapping>
+            <scala>JAVADOC_STYLE</scala>
+          </mapping>
+          <useDefaultMapping>true</useDefaultMapping>
+          <encoding>UTF-8</encoding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>format-headers</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>format</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.scala-tools</groupId>
+        <artifactId>maven-scala-plugin</artifactId>
+        <version>2.13.1</version>
+        <configuration>
+          <scalaVersion>${scala.version}</scalaVersion>
+          <charset>${project.build.sourceEncoding}</charset>
+          <jvmArgs>
+            <jvmArg>-Xmx1024m</jvmArg>
+          </jvmArgs>
+          <args>
+            <arg>-target:jvm-1.5</arg>
+            <arg>-make:changed</arg>
+            <arg>-deprecation</arg>
+            <arg>-unchecked</arg>
+            <arg>-optimise</arg>
+          </args>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+  ######################################################################################################################
+  Environment
+  ######################################################################################################################
+  -->
+
+  <!--scm>
+    <connection>git@git.assembla.com:cheshirecat</connection>
+    <developerConnection>git@git.assembla.com:cheshirecat</developerConnection>
+    <url>https://www.assembla.com/code/cheshirecat/git/changesets</url>
+  </scm>
+  <issueManagement>
+    <system>Assembla</system>
+    <url>https://www.assembla.com/spaces/cheshirecat/tickets</url>
+  </issueManagement-->
+  <repositories>
+    <repository>
+      <id>scala-tools.releases</id>
+      <name>Scala-Tools Dependencies Repository for Releases</name>
+      <url>http://scala-tools.org/repo-releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>scala-tools.snapshots</id>
+      <name>Scala-Tools Dependencies Repository for Snapshots</name>
+      <url>http://scala-tools.org/repo-snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
+</project>
