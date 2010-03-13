@@ -7,10 +7,7 @@
  */
 package com.weiglewilczek.gol
 
-/**
- * A cell on the board with coordinates x and y.
- */
-case class Cell(x: Int, y: Int)
+import scala.collection.Set
 
 /**
  * A generation of alive cells, empty by default.
