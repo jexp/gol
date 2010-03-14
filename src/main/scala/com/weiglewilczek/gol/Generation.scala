@@ -24,11 +24,30 @@ class Generation(val alive: Set[Cell] = Set.empty) {
     new Generation(stayingAlive ++ wakingFromDead)
   }
 
+  /**
+   * Creates an ASCII art representation.
+   */
+  override def toString: String = {
+    val rows = (dimension._3 to dimension._4).reverse map { y =>
+      val row = dimension._1 to dimension._2 map { x =>
+        if (alive contains Cell(x, y)) "X" else "-"
+      }
+      row.mkString
+    }
+    rows mkString "\n"
+  }
+
+  private lazy val dimension =
+    ((alive map { _.x }).min,
+     (alive map { _.x }).max,
+     (alive map { _.y }).min,
+     (alive map { _.y }).max)
+
   private def neighbours(cell: Cell) =
     for {
-      i <- (cell.x-1) to (cell.x+1)
-      j <- (cell.y-1) to (cell.y+1) if (i != cell.x) || (j != cell.y)
-    } yield Cell(i, j)
+      x <- (cell.x-1) to (cell.x+1)
+      y <- (cell.y-1) to (cell.y+1) if (x != cell.x) || (y != cell.y)
+    } yield Cell(x, y)
 
   private def aliveNeighbours(cell: Cell) = neighbours(cell) filter { alive contains _ }
 
