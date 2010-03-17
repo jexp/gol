@@ -15,8 +15,34 @@ import org.scalatest.matchers.ShouldMatchers
 @RunWith(classOf[JUnitRunner])
 class GenerationSpec extends WordSpec with ShouldMatchers {
 
+  // Testing the object
+
+  "Calling Generation.fromString" when {
+    "the given generation argument is null" should {
+      "throw an IllegalArgumentException" in {
+        evaluating { Generation fromString null } should produce [IllegalArgumentException]
+      }
+    }
+    """the given generation argument is "X" """ should {
+      "return a Generation with one alive Cell at (0, 0)" in {
+        (Generation fromString "X").alive should be (Set(Cell(0, 0)))
+      }
+    }
+    """the given generation argument is "advanced" """ should {
+      "return a Generation with three alive Cells at (0, 0), (1, 1) and (2, 2)" in {
+        val generation =
+          "--X" + LineSeparator +
+          "-X-" + LineSeparator +
+          "X"
+        (Generation fromString generation).alive should be (Set(Cell(0, 0), Cell(1, 1), Cell(2, 2)))
+      }
+    }
+  }
+
+  // Testing the class
+
   "Constructing a Generation" when {
-    "the given alive argument in null" should {
+    "the given alive argument is null" should {
       "throw an IllegalArgumentException" in {
         evaluating { new Generation(null: Set[Cell]) } should produce [IllegalArgumentException]
       }
@@ -76,4 +102,6 @@ class GenerationSpec extends WordSpec with ShouldMatchers {
       }
     }
   }
+
+  private val LineSeparator = System.getProperty("line.separator", "\n")
 }

@@ -10,6 +10,36 @@ package com.weiglewilczek.gol
 import scala.collection.Set
 
 /**
+ * Utilities for a generation of cells.
+ */
+object Generation {
+
+  /**
+   * String representation for alive.
+   */
+  val Alive = "X"
+
+  /**
+   * String representation for dead.
+   */
+  val Dead = "-"
+
+  /**
+   * Creates a generation
+   */
+  def fromString(generation: String): Generation = {
+    require(generation != null, "Illegal argument: generation must not be null!")
+    val lines = generation.lines.toSeq.reverse
+    val alive = for {
+      y <- 0 until lines.size
+      line = lines(y)
+      x <- 0 until line.size if line(x).toString == Alive
+    } yield Cell(x, y)
+    new Generation(alive.toSet)
+  }
+}
+
+/**
  * A generation of alive cells, empty by default.
  */
 class Generation(val alive: Set[Cell] = Set.empty) {
@@ -30,7 +60,7 @@ class Generation(val alive: Set[Cell] = Set.empty) {
   override def toString: String = {
     val rows = (dimension._3 to dimension._4).reverse map { y =>
       val row = dimension._1 to dimension._2 map { x =>
-        if (alive contains Cell(x, y)) "X" else "-"
+        if (alive contains Cell(x, y)) Generation.Alive else Generation.Dead
       }
       row.mkString
     }
