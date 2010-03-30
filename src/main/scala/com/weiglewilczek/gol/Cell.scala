@@ -10,4 +10,6 @@ package com.weiglewilczek.gol
 /**
  * A cell on the board with coordinates x and y.
  */
-case class Cell(x: Int, y: Int)
+case class Cell(x: Int, y: Int) {
+	def apply(dx : Int, dy: Int) = Cell(x+dx,y+dy)
+}

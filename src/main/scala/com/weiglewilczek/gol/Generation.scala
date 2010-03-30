@@ -27,7 +27,7 @@ object Generation {
   /**
    * Creates a generation
    */
-  def fromString(generation: String): Generation = {
+  def fromString2(generation: String): Generation = {
     require(generation != null, "Illegal argument: generation must not be null!")
     val lines = generation.lines.toSeq.reverse
     val alive = for {
@@ -37,6 +37,23 @@ object Generation {
     } yield Cell(x, y)
     new Generation(alive.toSet)
   }
+  def fromString(generation: String): Generation = {
+    require(generation != null, "Illegal argument: generation must not be null!")
+    val (_,_,alive) = ((0,0,Set[Cell]()) /: generation) { (t,c) =>
+	    val (x,y,r) = t
+		c match {
+			case 'X'  => (x+1, y  , r + Cell(x,y))
+			case '\n' => (0  , y-1, r)
+			case _    => (x+1, y  , r)
+		}
+    }
+	// just for the existing test cases
+	
+	
+	val minY = (alive map { _.y }).min
+	val alive2 = alive.map { c => Cell(c.x,c.y-minY)}.toSet
+    new Generation(alive2)
+  }
 }
 
 /**
@@ -45,18 +62,24 @@ object Generation {
 class Generation(val alive: Set[Cell] = Set.empty) {
   require(alive != null, "Illegal argument: alive must not be null!")
 
-  /**
-   * Transitions to the next generation by applying Conway's standard rules.
-   */
   def next: Generation = {
     val stayingAlive = alive filter { (2 to 3) contains aliveNeighbours(_).size  }
     val wakingFromDead = alive flatMap deadNeighbours filter { aliveNeighbours(_).size == 3 }
     new Generation(stayingAlive ++ wakingFromDead)
   }
 
-  /**
-   * Creates an ASCII art representation.
-   */
+  private def neighbours(cell: Cell) =
+    for {
+      dx <- (-1) to (1)
+      dy <- (-1) to (1) 
+      n = cell[dx,dy]
+	  if (n!=cell)
+    } yield n
+
+  private def aliveNeighbours(cell: Cell) = neighbours(cell) filter { alive contains _ }
+
+  private def deadNeighbours(cell: Cell) = neighbours(cell) filter { cell => !(alive contains cell) }
+
   override def toString: String = {
     val rows = (dimension._3 to dimension._4).reverse map { y =>
       val row = dimension._1 to dimension._2 map { x =>
@@ -72,14 +95,4 @@ class Generation(val alive: Set[Cell] = Set.empty) {
      (alive map { _.x }).max,
      (alive map { _.y }).min,
      (alive map { _.y }).max)
-
-  private def neighbours(cell: Cell) =
-    for {
-      x <- (cell.x-1) to (cell.x+1)
-      y <- (cell.y-1) to (cell.y+1) if (x != cell.x) || (y != cell.y)
-    } yield Cell(x, y)
-
-  private def aliveNeighbours(cell: Cell) = neighbours(cell) filter { alive contains _ }
-
-  private def deadNeighbours(cell: Cell) = neighbours(cell) filter { cell => !(alive contains cell) }
 }
